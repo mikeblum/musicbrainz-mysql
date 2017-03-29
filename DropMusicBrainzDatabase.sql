@@ -1,0 +1,3 @@
+BEGIN;
+DROP DATABASE musicbrainz;
+COMMIT;
