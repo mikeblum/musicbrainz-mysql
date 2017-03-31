@@ -1,5 +1,11 @@
 BEGIN;
 
+CREATE USER IF NOT EXISTS 'musicbrainz'@'localhost' IDENTIFIED BY 'musicbrainz';
+CREATE DATABASE IF NOT EXISTS musicbrainz;
+GRANT ALL PRIVILEGES ON musicbrainz.* TO 'musicbrainz'@'%' WITH GRANT OPTION;
+GRANT FILE ON *.* to 'musicbrainz'@'%';
+USE musicbrainz;
+
 CREATE TABLE IF NOT EXISTS alternative_release ( -- replicate
     id                      SERIAL, -- PK
     gid                     CHAR(36) NOT NULL,
@@ -132,8 +138,8 @@ CREATE TABLE IF NOT EXISTS area_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT FALSE,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
     CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -168,7 +174,7 @@ CREATE TABLE IF NOT EXISTS area_tag_raw (
     area                INTEGER NOT NULL, -- PK, references area.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS artist ( -- replicate (verbose)
@@ -188,7 +194,7 @@ CREATE TABLE IF NOT EXISTS artist ( -- replicate (verbose)
     comment             VARCHAR(255) NOT NULL DEFAULT '',
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
     CONSTRAINT artist_ended_check CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -232,8 +238,8 @@ CREATE TABLE IF NOT EXISTS artist_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT false,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT false,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -307,7 +313,7 @@ CREATE TABLE IF NOT EXISTS artist_tag_raw
     artist              INTEGER NOT NULL, -- PK, references artist.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS artist_credit ( -- replicate
@@ -378,8 +384,8 @@ CREATE TABLE IF NOT EXISTS cdtoc ( -- replicate
     freedb_id           CHAR(8) NOT NULL,
     track_count         INTEGER NOT NULL,
     leadout_offset      INTEGER NOT NULL,
-    track_offset        JSON NOT NULL,
-    degraded            BOOLEAN NOT NULL DEFAULT FALSE,
+    track_offset        BINARY(36) NOT NULL,
+    degraded            CHAR(1) NOT NULL DEFAULT FALSE,
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
@@ -527,7 +533,7 @@ CREATE TABLE IF NOT EXISTS editor
     area                INTEGER, -- references area.id
     password            VARCHAR(128) NOT NULL,
     ha1                 CHAR(32) NOT NULL,
-    deleted             BOOLEAN NOT NULL DEFAULT FALSE
+    deleted             CHAR(1) NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS editor_language (
@@ -565,7 +571,7 @@ CREATE TABLE IF NOT EXISTS editor_subscribe_collection
     editor              INTEGER NOT NULL,              -- references editor.id
     collection          INTEGER NOT NULL,              -- weakly references editor_collection.id
     last_edit_sent      INTEGER NOT NULL,              -- weakly references edit.id
-    available           BOOLEAN NOT NULL DEFAULT TRUE,
+    available           CHAR(1) NOT NULL DEFAULT TRUE,
     last_seen_name      VARCHAR(255)
 );
 
@@ -619,12 +625,12 @@ CREATE TABLE IF NOT EXISTS event ( -- replicate (verbose)
     end_date_day        SMALLINT,
     time                TIME,
     type                INTEGER, -- references event_type.id
-    cancelled           BOOLEAN NOT NULL DEFAULT FALSE,
+    cancelled           CHAR(1) NOT NULL DEFAULT FALSE,
     setlist             TEXT,
     comment             VARCHAR(255) NOT NULL DEFAULT '',
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
       CONSTRAINT event_ended_check CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -657,7 +663,7 @@ CREATE TABLE IF NOT EXISTS event_tag_raw (
     event               INTEGER NOT NULL, -- PK, references event.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS event_alias_type ( -- replicate
@@ -684,8 +690,8 @@ CREATE TABLE IF NOT EXISTS event_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT FALSE,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -798,8 +804,8 @@ CREATE TABLE IF NOT EXISTS instrument_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT FALSE,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -842,7 +848,7 @@ CREATE TABLE IF NOT EXISTS instrument_tag_raw (
     instrument          INTEGER NOT NULL, -- PK, references instrument.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS iso_3166_1 ( -- replicate
@@ -1828,7 +1834,7 @@ CREATE TABLE IF NOT EXISTS label ( -- replicate (verbose)
     comment             VARCHAR(255) NOT NULL DEFAULT '',
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
       CONSTRAINT label_ended_check CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -1857,7 +1863,7 @@ CREATE TABLE IF NOT EXISTS label_tag_raw
     label               INTEGER NOT NULL, -- PK, references label.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS label_alias_type ( -- replicate
@@ -1884,8 +1890,8 @@ CREATE TABLE IF NOT EXISTS label_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT false,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT false,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -1984,7 +1990,7 @@ CREATE TABLE IF NOT EXISTS link ( -- replicate
     end_date_day        SMALLINT,
     attribute_count     INTEGER NOT NULL DEFAULT 0,
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
       CONSTRAINT link_ended_check CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -2052,8 +2058,8 @@ CREATE TABLE IF NOT EXISTS link_type ( -- replicate
     long_link_phrase    VARCHAR(255) NOT NULL,
     priority            INTEGER NOT NULL DEFAULT 0,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    is_deprecated       BOOLEAN NOT NULL DEFAULT false,
-    has_dates           BOOLEAN NOT NULL DEFAULT true,
+    is_deprecated       CHAR(1) NOT NULL DEFAULT false,
+    has_dates           CHAR(1) NOT NULL DEFAULT true,
     entity0_cardinality INTEGER NOT NULL DEFAULT 0,
     entity1_cardinality INTEGER NOT NULL DEFAULT 0
 );
@@ -2066,129 +2072,129 @@ CREATE TABLE IF NOT EXISTS link_type_attribute_type ( -- replicate
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- CREATE TABLE IF NOT EXISTS editor_collection
--- (
---     id                  SERIAL,
---     gid                 CHAR(36) NOT NULL,
---     editor              INTEGER NOT NULL, -- references editor.id
---     name                VARCHAR(255) NOT NULL,
---     public              BOOLEAN NOT NULL DEFAULT FALSE,
---     description         TEXT NOT NULL,
---     type                INTEGER NOT NULL -- references editor_collection_type.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection
+(
+    id                  SERIAL,
+    gid                 CHAR(36) NOT NULL,
+    editor              INTEGER NOT NULL, -- references editor.id
+    name                VARCHAR(255) NOT NULL,
+    public              CHAR(1) NOT NULL DEFAULT FALSE,
+    description         TEXT NOT NULL,
+    type                INTEGER NOT NULL -- references editor_collection_type.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_type ( -- replicate
---     id                  SERIAL,
---     name                VARCHAR(255) NOT NULL,
---     entity_type         VARCHAR(50) NOT NULL,
---     parent              INTEGER, -- references editor_collection_type.id
---     child_order         INTEGER NOT NULL DEFAULT 0,
---     description         TEXT,
---     gid                 CHAR(36) NOT NULL
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_type ( -- replicate
+    id                  SERIAL,
+    name                VARCHAR(255) NOT NULL,
+    entity_type         VARCHAR(50) NOT NULL,
+    parent              INTEGER, -- references editor_collection_type.id
+    child_order         INTEGER NOT NULL DEFAULT 0,
+    description         TEXT,
+    gid                 CHAR(36) NOT NULL
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_area (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     area INTEGER NOT NULL -- PK, references area.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_area (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    area INTEGER NOT NULL -- PK, references area.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_artist (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     artist INTEGER NOT NULL -- PK, references artist.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_artist (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    artist INTEGER NOT NULL -- PK, references artist.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_event (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     event INTEGER NOT NULL -- PK, references event.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_event (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    event INTEGER NOT NULL -- PK, references event.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_instrument (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     instrument INTEGER NOT NULL -- PK, references instrument.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_instrument (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    instrument INTEGER NOT NULL -- PK, references instrument.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_label (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     label INTEGER NOT NULL -- PK, references label.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_label (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    label INTEGER NOT NULL -- PK, references label.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_place (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     place INTEGER NOT NULL -- PK, references place.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_place (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    place INTEGER NOT NULL -- PK, references place.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_recording (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     recording INTEGER NOT NULL -- PK, references recording.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_recording (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    recording INTEGER NOT NULL -- PK, references recording.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_release (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     release INTEGER NOT NULL -- PK, references release.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_release (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    `release` INTEGER NOT NULL -- PK, references release.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_release_group (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     release_group INTEGER NOT NULL -- PK, references release_group.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_release_group (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    release_group INTEGER NOT NULL -- PK, references release_group.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_series (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     series INTEGER NOT NULL -- PK, references series.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_series (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    series INTEGER NOT NULL -- PK, references series.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_work (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     work INTEGER NOT NULL -- PK, references work.id
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_work (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    work INTEGER NOT NULL -- PK, references work.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_collection_deleted_entity (
---     collection INTEGER NOT NULL, -- PK, references editor_collection.id
---     gid CHAR(36) NOT NULL -- PK, references deleted_entity.gid
--- );
+CREATE TABLE IF NOT EXISTS editor_collection_deleted_entity (
+    collection INTEGER NOT NULL, -- PK, references editor_collection.id
+    gid CHAR(36) NOT NULL -- PK, references deleted_entity.gid
+);
 
--- CREATE TABLE IF NOT EXISTS editor_oauth_token
--- (
---     id                  SERIAL,
---     editor              INTEGER NOT NULL, -- references editor.id
---     application         INTEGER NOT NULL, -- references application.id
---     authorization_code  TEXT,
---     refresh_token       TEXT,
---     access_token        TEXT,
---     expire_time         TIMESTAMP WITH TIME ZONE NOT NULL,
---     scope               INTEGER NOT NULL DEFAULT 0,
---     granted             TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
--- );
+CREATE TABLE IF NOT EXISTS editor_oauth_token
+(
+    id                  SERIAL,
+    editor              INTEGER NOT NULL, -- references editor.id
+    application         INTEGER NOT NULL, -- references application.id
+    authorization_code  TEXT,
+    refresh_token       TEXT,
+    access_token        TEXT,
+    expire_time         TIMESTAMP NOT NULL,
+    scope               INTEGER NOT NULL DEFAULT 0,
+    granted             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
--- CREATE TABLE IF NOT EXISTS editor_watch_preferences
--- (
---     editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
---     notify_via_email BOOLEAN NOT NULL DEFAULT TRUE,
---     notification_timeframe INTERVAL NOT NULL DEFAULT '1 week',
---     last_checked TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
--- );
+CREATE TABLE IF NOT EXISTS editor_watch_preferences
+(
+    editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
+    notify_via_email CHAR(1) NOT NULL DEFAULT TRUE,
+    notification_timeframe TIME NOT NULL DEFAULT '00:00:00',
+    last_checked TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
--- CREATE TABLE IF NOT EXISTS editor_watch_artist
--- (
---     artist INTEGER NOT NULL, -- PK, references artist.id CASCADE
---     editor INTEGER NOT NULL  -- PK, references editor.id CASCADE
--- );
+CREATE TABLE IF NOT EXISTS editor_watch_artist
+(
+    artist INTEGER NOT NULL, -- PK, references artist.id CASCADE
+    editor INTEGER NOT NULL  -- PK, references editor.id CASCADE
+);
 
--- CREATE TABLE IF NOT EXISTS editor_watch_release_group_type
--- (
---     editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
---     release_group_type INTEGER NOT NULL -- PK, references release_group_primary_type.id
--- );
+CREATE TABLE IF NOT EXISTS editor_watch_release_group_type
+(
+    editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
+    release_group_type INTEGER NOT NULL -- PK, references release_group_primary_type.id
+);
 
--- CREATE TABLE IF NOT EXISTS editor_watch_release_status
--- (
---     editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
---     release_status INTEGER NOT NULL -- PK, references release_status.id
--- );
+CREATE TABLE IF NOT EXISTS editor_watch_release_status
+(
+    editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
+    release_status INTEGER NOT NULL -- PK, references release_status.id
+);
 
 CREATE TABLE IF NOT EXISTS medium ( -- replicate (verbose)
     id                  SERIAL,
-    `release`             INTEGER NOT NULL, -- references release.id (RELE)
+    `release`           INTEGER NOT NULL, -- references release.id (RELE)
     position            INTEGER NOT NULL,
     format              INTEGER, -- references medium_format.id
     name                VARCHAR(255) NOT NULL DEFAULT '',
@@ -2211,7 +2217,7 @@ CREATE TABLE IF NOT EXISTS medium_format ( -- replicate
     parent              INTEGER, -- references medium_format.id
     child_order         INTEGER NOT NULL DEFAULT 0,
     year                SMALLINT,
-    has_discids         BOOLEAN NOT NULL DEFAULT FALSE,
+    has_discids         CHAR(1) NOT NULL DEFAULT FALSE,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
 );
@@ -2238,7 +2244,7 @@ CREATE TABLE IF NOT EXISTS place ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE
+    ended               CHAR(1) NOT NULL DEFAULT FALSE
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -2270,8 +2276,8 @@ CREATE TABLE IF NOT EXISTS place_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT false,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT false,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -2330,7 +2336,7 @@ CREATE TABLE IF NOT EXISTS place_tag_raw
     place               INTEGER NOT NULL, -- PK, references place.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS place_type ( -- replicate
@@ -2358,7 +2364,7 @@ CREATE TABLE IF NOT EXISTS recording ( -- replicate (verbose)
     comment             VARCHAR(255) NOT NULL DEFAULT '',
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    video               BOOLEAN NOT NULL DEFAULT FALSE
+    video               CHAR(1) NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS recording_alias_type ( -- replicate
@@ -2385,8 +2391,8 @@ CREATE TABLE IF NOT EXISTS recording_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT false,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT false,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
     CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -2417,7 +2423,7 @@ CREATE TABLE IF NOT EXISTS recording_tag_raw
     recording           INTEGER NOT NULL, -- PK, references recording.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS recording_annotation ( -- replicate (verbose)
@@ -2485,8 +2491,8 @@ CREATE TABLE IF NOT EXISTS release_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT FALSE,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE,
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE,
     CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -2538,7 +2544,7 @@ CREATE TABLE IF NOT EXISTS release_tag_raw
     `release`             INTEGER NOT NULL, -- PK, references release.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS release_annotation ( -- replicate (verbose)
@@ -2636,8 +2642,8 @@ CREATE TABLE IF NOT EXISTS release_group_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT false,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT false,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -2667,7 +2673,7 @@ CREATE TABLE IF NOT EXISTS release_group_tag_raw
     release_group       INTEGER NOT NULL, -- PK, references release_group.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS release_group_annotation ( -- replicate (verbose)
@@ -2791,8 +2797,8 @@ CREATE TABLE IF NOT EXISTS series_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT FALSE,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT FALSE,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -2835,7 +2841,7 @@ CREATE TABLE IF NOT EXISTS series_tag_raw (
     series              INTEGER NOT NULL, -- PK, references series.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS tag ( -- replicate (verbose)
@@ -2865,7 +2871,7 @@ CREATE TABLE IF NOT EXISTS track ( -- replicate (verbose)
     length              INTEGER CHECK (length IS NULL OR length > 0),
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    is_data_track       BOOLEAN NOT NULL DEFAULT FALSE
+    is_data_track       CHAR(1) NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS track_gid_redirect ( -- replicate (verbose)
@@ -2908,7 +2914,7 @@ CREATE TABLE IF NOT EXISTS vote
     edit                INTEGER NOT NULL, -- references edit.id
     vote                SMALLINT NOT NULL,
     vote_time            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    superseded          BOOLEAN NOT NULL DEFAULT FALSE
+    superseded          CHAR(1) NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS work ( -- replicate (verbose)
@@ -2934,7 +2940,7 @@ CREATE TABLE IF NOT EXISTS work_tag_raw
     work                INTEGER NOT NULL, -- PK, references work.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
-    is_upvote           BOOLEAN NOT NULL DEFAULT TRUE
+    is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS work_alias_type ( -- replicate
@@ -2961,8 +2967,8 @@ CREATE TABLE IF NOT EXISTS work_alias ( -- replicate (verbose)
     end_date_year       SMALLINT,
     end_date_month      SMALLINT,
     end_date_day        SMALLINT,
-    primary_for_locale  BOOLEAN NOT NULL DEFAULT false,
-    ended               BOOLEAN NOT NULL DEFAULT FALSE
+    primary_for_locale  CHAR(1) NOT NULL DEFAULT false,
+    ended               CHAR(1) NOT NULL DEFAULT FALSE
       CHECK (
         (
           -- If any end date fields are not null, then ended must be true
@@ -3026,7 +3032,7 @@ CREATE TABLE IF NOT EXISTS work_attribute_type ( -- replicate (verbose)
     id                  SERIAL,  -- PK
     name                VARCHAR(255) NOT NULL,
     comment             VARCHAR(255) NOT NULL DEFAULT '',
-    free_text           BOOLEAN NOT NULL,
+    free_text           CHAR(1) NOT NULL,
     parent              INTEGER, -- references work_attribute_type.id
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
