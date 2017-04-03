@@ -2234,7 +2234,7 @@ CREATE TABLE IF NOT EXISTS place ( -- replicate (verbose)
     type                INTEGER, -- references place_type.id
     address             VARCHAR(255) NOT NULL DEFAULT '',
     area                INTEGER, -- references area.id
-    coordinates         POINT,
+    coordinates         VARCHAR(255), -- originally a point. need to convert it
     comment             VARCHAR(255) NOT NULL DEFAULT '',
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >=0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
