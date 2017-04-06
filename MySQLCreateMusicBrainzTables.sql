@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS alternative_release ( -- replicate
     script                  INTEGER NOT NULL, -- references script.id
     comment                 VARCHAR(255) NOT NULL DEFAULT ''
     CHECK (name != '')
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS alternative_release_type ( -- replicate
     id                  SERIAL, -- PK
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS alternative_release_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS alternative_medium ( -- replicate
     id                      SERIAL, -- PK
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS alternative_medium ( -- replicate
     alternative_release     INTEGER NOT NULL, -- references alternative_release.id
     name                    VARCHAR(255)
     CHECK (name != '')
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS alternative_track ( -- replicate
     id                      SERIAL, -- PK
@@ -42,13 +42,13 @@ CREATE TABLE IF NOT EXISTS alternative_track ( -- replicate
     artist_credit           INTEGER, -- references artist_credit.id
     ref_count               INTEGER NOT NULL DEFAULT 0
     CHECK (name != '' AND (name IS NOT NULL OR artist_credit IS NOT NULL))
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS alternative_medium_track ( -- replicate
     alternative_medium      INTEGER NOT NULL, -- PK, references alternative_medium.id
     track                   INTEGER NOT NULL, -- PK, references track.id
     alternative_track       INTEGER NOT NULL -- references alternative_track.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS annotation ( -- replicate (verbose)
     id                 SERIAL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS annotation ( -- replicate (verbose)
     text                TEXT,
     changelog           VARCHAR(255),
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS application
 (
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS application
     oauth_id            TEXT NOT NULL,
     oauth_secret        TEXT NOT NULL,
     oauth_redirect_uri  TEXT
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS area_type ( -- replicate
     id                    SERIAL, -- PK
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS area_type ( -- replicate
     child_order           INTEGER NOT NULL DEFAULT 0,
     description           TEXT,
     gid                   CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS area ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -106,13 +106,13 @@ CREATE TABLE IF NOT EXISTS area ( -- replicate (verbose)
         )
       ),
     comment             VARCHAR(255) NOT NULL DEFAULT ''
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS area_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references area.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS area_alias_type ( -- replicate
     id                  SERIAL, -- PK,
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS area_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS area_alias ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -155,27 +155,27 @@ CREATE TABLE IF NOT EXISTS area_alias ( -- replicate (verbose)
         )
     ),
     CONSTRAINT primary_check CHECK ((locale IS NULL AND primary_for_locale IS FALSE) OR (locale IS NOT NULL))
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS area_annotation ( -- replicate (verbose)
     area        INTEGER NOT NULL, -- PK, references area.id
     annotation  INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS area_tag ( -- replicate (verbose)
     area                INTEGER NOT NULL, -- PK, references area.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS area_tag_raw (
     area                INTEGER NOT NULL, -- PK, references area.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist ( -- replicate (verbose)
     id                  SERIAL,
@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS artist ( -- replicate (verbose)
     ),
     begin_area          INTEGER, -- references area.id
     end_area            INTEGER -- references area.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_alias_type ( -- replicate
     id                  SERIAL,
@@ -220,7 +220,7 @@ CREATE TABLE IF NOT EXISTS artist_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS artist_alias ( -- replicate (verbose)
@@ -264,12 +264,12 @@ CREATE TABLE IF NOT EXISTS artist_alias ( -- replicate (verbose)
           primary_for_locale IS FALSE AND locale IS NULL
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_annotation ( -- replicate (verbose)
     artist              INTEGER NOT NULL, -- PK, references artist.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS artist_ipi ( -- replicate (verbose)
@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS artist_ipi ( -- replicate (verbose)
     ipi                 CHAR(11) NOT NULL CHECK (ipi REGEXP '^\\d{11}$'), -- PK
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS artist_isni ( -- replicate (verbose)
@@ -285,28 +285,28 @@ CREATE TABLE IF NOT EXISTS artist_isni ( -- replicate (verbose)
     isni                CHAR(36) NOT NULL CHECK (isni REGEXP '^\\d{15}[\\dX]$'), -- PK
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
 CREATE TABLE IF NOT EXISTS artist_meta ( -- replicate
     id                  INTEGER NOT NULL, -- PK, references artist.id CASCADE
     rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
     rating_count        INTEGER
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_tag ( -- replicate (verbose)
     artist              INTEGER NOT NULL, -- PK, references artist.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_rating_raw
 (
     artist              INTEGER NOT NULL, -- PK, references artist.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     rating              SMALLINT NOT NULL CHECK (rating >= 0 AND rating <= 100)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_tag_raw
 (
@@ -314,7 +314,7 @@ CREATE TABLE IF NOT EXISTS artist_tag_raw
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_credit ( -- replicate
     id                  SERIAL,
@@ -322,7 +322,7 @@ CREATE TABLE IF NOT EXISTS artist_credit ( -- replicate
     artist_count        SMALLINT NOT NULL,
     ref_count           INTEGER DEFAULT 0,
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_credit_name ( -- replicate (verbose)
     artist_credit       INTEGER NOT NULL, -- PK, references artist_credit.id CASCADE
@@ -330,13 +330,13 @@ CREATE TABLE IF NOT EXISTS artist_credit_name ( -- replicate (verbose)
     artist              INTEGER NOT NULL, -- references artist.id CASCADE
     name                VARCHAR(255) NOT NULL,
     join_phrase         TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references artist.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS artist_type ( -- replicate
     id                  SERIAL,
@@ -345,7 +345,7 @@ CREATE TABLE IF NOT EXISTS artist_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS autoeditor_election
 (
@@ -367,7 +367,7 @@ CREATE TABLE IF NOT EXISTS autoeditor_election
     propose_time        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     open_time           TIMESTAMP,
     close_time          TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS autoeditor_election_vote
 (
@@ -376,7 +376,7 @@ CREATE TABLE IF NOT EXISTS autoeditor_election_vote
     voter               INTEGER NOT NULL, -- references editor.id
     vote                INTEGER NOT NULL CHECK (vote IN (-1,0,1)),
     vote_time           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS cdtoc ( -- replicate
     id                  SERIAL,
@@ -387,7 +387,7 @@ CREATE TABLE IF NOT EXISTS cdtoc ( -- replicate
     track_offset        BINARY(36) NOT NULL,
     degraded            CHAR(1) NOT NULL DEFAULT FALSE,
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS cdtoc_raw ( -- replicate
     id                      SERIAL, -- PK
@@ -396,17 +396,17 @@ CREATE TABLE IF NOT EXISTS cdtoc_raw ( -- replicate
     track_count             INTEGER NOT NULL,
     leadout_offset          INTEGER NOT NULL,
     track_offset            JSON NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS country_area ( -- replicate (verbose)
     area                INTEGER -- PK, references area.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS deleted_entity (
     gid CHAR(36) NOT NULL, -- PK
     data JSON NOT NULL,
     deleted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit
 (
@@ -420,13 +420,13 @@ CREATE TABLE IF NOT EXISTS edit
     expire_time         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     language            INTEGER, -- references language.id
     quality             SMALLINT NOT NULL DEFAULT 1
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_data
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     data                JSON NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_note
 (
@@ -435,86 +435,86 @@ CREATE TABLE IF NOT EXISTS edit_note
     edit                INTEGER NOT NULL, -- references edit.id
     text                TEXT NOT NULL,
     post_time            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_note_recipient (
     recipient           INTEGER NOT NULL, -- PK, references editor.id
     edit_note           INTEGER NOT NULL  -- PK, references edit_note.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_area
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     area                INTEGER NOT NULL  -- PK, references area.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_artist
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     artist              INTEGER NOT NULL, -- PK, references artist.id CASCADE
     status              SMALLINT NOT NULL -- materialized from edit.status
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_event
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     event               INTEGER NOT NULL  -- PK, references event.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_instrument
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     instrument          INTEGER NOT NULL  -- PK, references instrument.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_label
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     label               INTEGER NOT NULL, -- PK, references label.id CASCADE
     status              SMALLINT NOT NULL -- materialized from edit.status
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_place
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     place               INTEGER NOT NULL  -- PK, references place.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_release
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     `release`             INTEGER NOT NULL  -- PK, references release.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_release_group
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     release_group       INTEGER NOT NULL  -- PK, references release_group.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_recording
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     recording           INTEGER NOT NULL  -- PK, references recording.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_series
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     series              INTEGER NOT NULL  -- PK, references series.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_work
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     work                INTEGER NOT NULL  -- PK, references work.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS edit_url
 (
     edit                INTEGER NOT NULL, -- PK, references edit.id
     url                 INTEGER NOT NULL  -- PK, references url.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor
 (
@@ -534,13 +534,13 @@ CREATE TABLE IF NOT EXISTS editor
     password            VARCHAR(128) NOT NULL,
     ha1                 CHAR(32) NOT NULL,
     deleted             CHAR(1) NOT NULL DEFAULT FALSE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_language (
     editor   INTEGER NOT NULL,  -- PK, references editor.id
     language INTEGER NOT NULL,  -- PK, references language.id
     fluency  ENUM ('basic', 'intermediate', 'advanced', 'native') NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_preference
 (
@@ -548,7 +548,7 @@ CREATE TABLE IF NOT EXISTS editor_preference
     editor              INTEGER NOT NULL, -- references editor.id
     name                VARCHAR(50) NOT NULL,
     value               VARCHAR(100) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_artist
 (
@@ -556,14 +556,14 @@ CREATE TABLE IF NOT EXISTS editor_subscribe_artist
     editor              INTEGER NOT NULL, -- references editor.id
     artist              INTEGER NOT NULL, -- references artist.id
     last_edit_sent      INTEGER NOT NULL -- references edit.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_artist_deleted
 (
     editor INTEGER NOT NULL, -- PK, references editor.id
     gid CHAR(36) NOT NULL, -- PK, references deleted_entity.gid
     deleted_by INTEGER NOT NULL -- references edit.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_collection
 (
@@ -573,7 +573,7 @@ CREATE TABLE IF NOT EXISTS editor_subscribe_collection
     last_edit_sent      INTEGER NOT NULL,              -- weakly references edit.id
     available           CHAR(1) NOT NULL DEFAULT TRUE,
     last_seen_name      VARCHAR(255)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_label
 (
@@ -581,14 +581,14 @@ CREATE TABLE IF NOT EXISTS editor_subscribe_label
     editor              INTEGER NOT NULL, -- references editor.id
     label               INTEGER NOT NULL, -- references label.id
     last_edit_sent      INTEGER NOT NULL -- references edit.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_label_deleted
 (
     editor INTEGER NOT NULL, -- PK, references editor.id
     gid CHAR(36) NOT NULL, -- PK, references deleted_entity.gid
     deleted_by INTEGER NOT NULL -- references edit.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_editor
 (
@@ -596,7 +596,7 @@ CREATE TABLE IF NOT EXISTS editor_subscribe_editor
     editor              INTEGER NOT NULL, -- references editor.id (the one who has subscribed)
     subscribed_editor   INTEGER NOT NULL, -- references editor.id (the one being subscribed)
     last_edit_sent      INTEGER NOT NULL  -- weakly references edit.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_series
 (
@@ -604,14 +604,14 @@ CREATE TABLE IF NOT EXISTS editor_subscribe_series
     editor              INTEGER NOT NULL, -- references editor.id
     series              INTEGER NOT NULL, -- references series.id
     last_edit_sent      INTEGER NOT NULL -- references edit.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_subscribe_series_deleted
 (
     editor              INTEGER NOT NULL, -- PK, references editor.id
     gid                 CHAR(36) NOT NULL, -- PK, references deleted_entity.gid
     deleted_by          INTEGER NOT NULL -- references edit.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event ( -- replicate (verbose)
     id                  SERIAL,
@@ -645,26 +645,26 @@ CREATE TABLE IF NOT EXISTS event ( -- replicate (verbose)
            end_date_day IS NULL)
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_meta ( -- replicate
     id                  INTEGER NOT NULL, -- PK, references event.id CASCADE
     rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
     rating_count        INTEGER
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_rating_raw (
     event               INTEGER NOT NULL, -- PK, references event.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     rating              SMALLINT NOT NULL CHECK (rating >= 0 AND rating <= 100)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_tag_raw (
     event               INTEGER NOT NULL, -- PK, references event.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_alias_type ( -- replicate
     id                  SERIAL,
@@ -673,7 +673,7 @@ CREATE TABLE IF NOT EXISTS event_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_alias ( -- replicate (verbose)
     id                  SERIAL,
@@ -716,25 +716,25 @@ CREATE TABLE IF NOT EXISTS event_alias ( -- replicate (verbose)
           primary_for_locale IS FALSE AND locale IS NULL
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_annotation ( -- replicate (verbose)
     event               INTEGER NOT NULL, -- PK, references event.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references event.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_tag ( -- replicate (verbose)
     event               INTEGER NOT NULL, -- PK, references event.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS event_type ( -- replicate
     id                  SERIAL,
@@ -743,7 +743,7 @@ CREATE TABLE IF NOT EXISTS event_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS gender ( -- replicate
     id                  SERIAL,
@@ -752,7 +752,7 @@ CREATE TABLE IF NOT EXISTS gender ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument_type ( -- replicate
     id                  SERIAL, -- PK
@@ -761,7 +761,7 @@ CREATE TABLE IF NOT EXISTS instrument_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -772,13 +772,13 @@ CREATE TABLE IF NOT EXISTS instrument ( -- replicate (verbose)
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     comment             VARCHAR(255) NOT NULL DEFAULT '',
     description         TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references instrument.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument_alias_type ( -- replicate
     id                  SERIAL, -- PK,
@@ -787,7 +787,7 @@ CREATE TABLE IF NOT EXISTS instrument_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument_alias ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -830,39 +830,39 @@ CREATE TABLE IF NOT EXISTS instrument_alias ( -- replicate (verbose)
           primary_for_locale IS FALSE AND locale IS NULL
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument_annotation ( -- replicate (verbose)
     instrument  INTEGER NOT NULL, -- PK, references instrument.id
     annotation  INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument_tag ( -- replicate (verbose)
     instrument          INTEGER NOT NULL, -- PK, references instrument.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS instrument_tag_raw (
     instrument          INTEGER NOT NULL, -- PK, references instrument.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS iso_3166_1 ( -- replicate
     area      INTEGER NOT NULL, -- references area.id
     code      CHAR(2) -- PK
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE TABLE IF NOT EXISTS iso_3166_2 ( -- replicate
     area      INTEGER NOT NULL, -- references area.id
     code      VARCHAR(10) -- PK
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 CREATE TABLE IF NOT EXISTS iso_3166_3 ( -- replicate
     area      INTEGER NOT NULL, -- references area.id
     code      CHAR(4) -- PK
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS isrc ( -- replicate (verbose)
     id                  SERIAL,
@@ -871,7 +871,7 @@ CREATE TABLE IF NOT EXISTS isrc ( -- replicate (verbose)
     source              SMALLINT,
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS iswc ( -- replicate (verbose)
     id SERIAL NOT NULL,
@@ -880,7 +880,7 @@ CREATE TABLE IF NOT EXISTS iswc ( -- replicate (verbose)
     source SMALLINT,
     edits_pending INTEGER NOT NULL DEFAULT 0,
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_area ( -- replicate
     id                  SERIAL,
@@ -892,7 +892,7 @@ CREATE TABLE IF NOT EXISTS l_area_area ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_artist ( -- replicate
     id                  SERIAL,
@@ -904,7 +904,7 @@ CREATE TABLE IF NOT EXISTS l_area_artist ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_event ( -- replicate
     id                  SERIAL,
@@ -916,7 +916,7 @@ CREATE TABLE IF NOT EXISTS l_area_event ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_instrument ( -- replicate
     id                  SERIAL,
@@ -928,7 +928,7 @@ CREATE TABLE IF NOT EXISTS l_area_instrument ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_label ( -- replicate
     id                  SERIAL,
@@ -940,7 +940,7 @@ CREATE TABLE IF NOT EXISTS l_area_label ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_place ( -- replicate
     id                  SERIAL,
@@ -952,7 +952,7 @@ CREATE TABLE IF NOT EXISTS l_area_place ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_recording ( -- replicate
     id                  SERIAL,
@@ -964,7 +964,7 @@ CREATE TABLE IF NOT EXISTS l_area_recording ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_release ( -- replicate
     id                  SERIAL,
@@ -976,7 +976,7 @@ CREATE TABLE IF NOT EXISTS l_area_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_release_group ( -- replicate
     id                  SERIAL,
@@ -988,7 +988,7 @@ CREATE TABLE IF NOT EXISTS l_area_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_series ( -- replicate
     id                  SERIAL,
@@ -1000,7 +1000,7 @@ CREATE TABLE IF NOT EXISTS l_area_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_url ( -- replicate
     id                  SERIAL,
@@ -1012,7 +1012,7 @@ CREATE TABLE IF NOT EXISTS l_area_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_area_work ( -- replicate
     id                  SERIAL,
@@ -1024,7 +1024,7 @@ CREATE TABLE IF NOT EXISTS l_area_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_artist ( -- replicate
     id                  SERIAL,
@@ -1036,7 +1036,7 @@ CREATE TABLE IF NOT EXISTS l_artist_artist ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_event ( -- replicate
     id                  SERIAL,
@@ -1048,7 +1048,7 @@ CREATE TABLE IF NOT EXISTS l_artist_event ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_instrument ( -- replicate
     id                  SERIAL,
@@ -1060,7 +1060,7 @@ CREATE TABLE IF NOT EXISTS l_artist_instrument ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_label ( -- replicate
     id                  SERIAL,
@@ -1072,7 +1072,7 @@ CREATE TABLE IF NOT EXISTS l_artist_label ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_place ( -- replicate
     id                  SERIAL,
@@ -1084,7 +1084,7 @@ CREATE TABLE IF NOT EXISTS l_artist_place ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_recording ( -- replicate
     id                  SERIAL,
@@ -1096,7 +1096,7 @@ CREATE TABLE IF NOT EXISTS l_artist_recording ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_release ( -- replicate
     id                  SERIAL,
@@ -1108,7 +1108,7 @@ CREATE TABLE IF NOT EXISTS l_artist_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_release_group ( -- replicate
     id                  SERIAL,
@@ -1120,7 +1120,7 @@ CREATE TABLE IF NOT EXISTS l_artist_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_series ( -- replicate
     id                  SERIAL,
@@ -1132,7 +1132,7 @@ CREATE TABLE IF NOT EXISTS l_artist_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_url ( -- replicate
     id                  SERIAL,
@@ -1144,7 +1144,7 @@ CREATE TABLE IF NOT EXISTS l_artist_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_artist_work ( -- replicate (verbose)
     id                  SERIAL,
@@ -1156,7 +1156,7 @@ CREATE TABLE IF NOT EXISTS l_artist_work ( -- replicate (verbose)
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_event ( -- replicate
     id                  SERIAL,
@@ -1168,7 +1168,7 @@ CREATE TABLE IF NOT EXISTS l_event_event ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_instrument ( -- replicate
     id                  SERIAL,
@@ -1180,7 +1180,7 @@ CREATE TABLE IF NOT EXISTS l_event_instrument ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_label ( -- replicate
     id                  SERIAL,
@@ -1192,7 +1192,7 @@ CREATE TABLE IF NOT EXISTS l_event_label ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_place ( -- replicate
     id                  SERIAL,
@@ -1204,7 +1204,7 @@ CREATE TABLE IF NOT EXISTS l_event_place ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_recording ( -- replicate
     id                  SERIAL,
@@ -1216,7 +1216,7 @@ CREATE TABLE IF NOT EXISTS l_event_recording ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_release ( -- replicate
     id                  SERIAL,
@@ -1228,7 +1228,7 @@ CREATE TABLE IF NOT EXISTS l_event_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_release_group ( -- replicate
     id                  SERIAL,
@@ -1240,7 +1240,7 @@ CREATE TABLE IF NOT EXISTS l_event_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_series ( -- replicate
     id                  SERIAL,
@@ -1252,7 +1252,7 @@ CREATE TABLE IF NOT EXISTS l_event_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_url ( -- replicate
     id                  SERIAL,
@@ -1264,7 +1264,7 @@ CREATE TABLE IF NOT EXISTS l_event_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_event_work ( -- replicate
     id                  SERIAL,
@@ -1276,7 +1276,7 @@ CREATE TABLE IF NOT EXISTS l_event_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_label ( -- replicate
     id                  SERIAL,
@@ -1288,7 +1288,7 @@ CREATE TABLE IF NOT EXISTS l_label_label ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_instrument ( -- replicate
     id                  SERIAL,
@@ -1300,7 +1300,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_instrument ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_label ( -- replicate
     id                  SERIAL,
@@ -1312,7 +1312,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_label ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_place ( -- replicate
     id                  SERIAL,
@@ -1324,7 +1324,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_place ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_recording ( -- replicate
     id                  SERIAL,
@@ -1336,7 +1336,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_recording ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_release ( -- replicate
     id                  SERIAL,
@@ -1348,7 +1348,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_release_group ( -- replicate
     id                  SERIAL,
@@ -1360,7 +1360,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_series ( -- replicate
     id                  SERIAL,
@@ -1372,7 +1372,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_url ( -- replicate
     id                  SERIAL,
@@ -1384,7 +1384,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_instrument_work ( -- replicate
     id                  SERIAL,
@@ -1396,7 +1396,7 @@ CREATE TABLE IF NOT EXISTS l_instrument_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_place ( -- replicate
     id                  SERIAL,
@@ -1408,7 +1408,7 @@ CREATE TABLE IF NOT EXISTS l_label_place ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_recording ( -- replicate
     id                  SERIAL,
@@ -1420,7 +1420,7 @@ CREATE TABLE IF NOT EXISTS l_label_recording ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_release ( -- replicate
     id                  SERIAL,
@@ -1432,7 +1432,7 @@ CREATE TABLE IF NOT EXISTS l_label_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_release_group ( -- replicate
     id                  SERIAL,
@@ -1444,7 +1444,7 @@ CREATE TABLE IF NOT EXISTS l_label_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_series ( -- replicate
     id                  SERIAL,
@@ -1456,7 +1456,7 @@ CREATE TABLE IF NOT EXISTS l_label_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_url ( -- replicate
     id                  SERIAL,
@@ -1468,7 +1468,7 @@ CREATE TABLE IF NOT EXISTS l_label_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_label_work ( -- replicate
     id                  SERIAL,
@@ -1480,7 +1480,7 @@ CREATE TABLE IF NOT EXISTS l_label_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_place_place ( -- replicate
     id                  SERIAL,
@@ -1492,7 +1492,7 @@ CREATE TABLE IF NOT EXISTS l_place_place ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_place_recording ( -- replicate
     id                  SERIAL,
@@ -1504,7 +1504,7 @@ CREATE TABLE IF NOT EXISTS l_place_recording ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_place_release ( -- replicate
     id                  SERIAL,
@@ -1516,7 +1516,7 @@ CREATE TABLE IF NOT EXISTS l_place_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_place_release_group ( -- replicate
     id                  SERIAL,
@@ -1528,7 +1528,7 @@ CREATE TABLE IF NOT EXISTS l_place_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_place_series ( -- replicate
     id                  SERIAL,
@@ -1540,7 +1540,7 @@ CREATE TABLE IF NOT EXISTS l_place_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_place_url ( -- replicate
     id                  SERIAL,
@@ -1552,7 +1552,7 @@ CREATE TABLE IF NOT EXISTS l_place_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_place_work ( -- replicate
     id                  SERIAL,
@@ -1564,7 +1564,7 @@ CREATE TABLE IF NOT EXISTS l_place_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_recording_recording ( -- replicate
     id                  SERIAL,
@@ -1576,7 +1576,7 @@ CREATE TABLE IF NOT EXISTS l_recording_recording ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_recording_release ( -- replicate
     id                  SERIAL,
@@ -1588,7 +1588,7 @@ CREATE TABLE IF NOT EXISTS l_recording_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_recording_release_group ( -- replicate
     id                  SERIAL,
@@ -1600,7 +1600,7 @@ CREATE TABLE IF NOT EXISTS l_recording_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_recording_series ( -- replicate
     id                  SERIAL,
@@ -1612,7 +1612,7 @@ CREATE TABLE IF NOT EXISTS l_recording_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_recording_url ( -- replicate
     id                  SERIAL,
@@ -1624,7 +1624,7 @@ CREATE TABLE IF NOT EXISTS l_recording_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_recording_work ( -- replicate
     id                  SERIAL,
@@ -1636,7 +1636,7 @@ CREATE TABLE IF NOT EXISTS l_recording_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_release ( -- replicate
     id                  SERIAL,
@@ -1648,7 +1648,7 @@ CREATE TABLE IF NOT EXISTS l_release_release ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_release_group ( -- replicate
     id                  SERIAL,
@@ -1660,7 +1660,7 @@ CREATE TABLE IF NOT EXISTS l_release_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_series ( -- replicate
     id                  SERIAL,
@@ -1672,7 +1672,7 @@ CREATE TABLE IF NOT EXISTS l_release_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_url ( -- replicate
     id                  SERIAL,
@@ -1684,7 +1684,7 @@ CREATE TABLE IF NOT EXISTS l_release_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_work ( -- replicate
     id                  SERIAL,
@@ -1696,7 +1696,7 @@ CREATE TABLE IF NOT EXISTS l_release_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_group_release_group ( -- replicate
     id                  SERIAL,
@@ -1708,7 +1708,7 @@ CREATE TABLE IF NOT EXISTS l_release_group_release_group ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_group_series ( -- replicate
     id                  SERIAL,
@@ -1720,7 +1720,7 @@ CREATE TABLE IF NOT EXISTS l_release_group_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_group_url ( -- replicate
     id                  SERIAL,
@@ -1732,7 +1732,7 @@ CREATE TABLE IF NOT EXISTS l_release_group_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_release_group_work ( -- replicate
     id                  SERIAL,
@@ -1744,7 +1744,7 @@ CREATE TABLE IF NOT EXISTS l_release_group_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_series_series ( -- replicate
     id                  SERIAL,
@@ -1756,7 +1756,7 @@ CREATE TABLE IF NOT EXISTS l_series_series ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_series_url ( -- replicate
     id                  SERIAL,
@@ -1768,7 +1768,7 @@ CREATE TABLE IF NOT EXISTS l_series_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_series_work ( -- replicate
     id                  SERIAL,
@@ -1780,7 +1780,7 @@ CREATE TABLE IF NOT EXISTS l_series_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_url_url ( -- replicate
     id                  SERIAL,
@@ -1792,7 +1792,7 @@ CREATE TABLE IF NOT EXISTS l_url_url ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_url_work ( -- replicate
     id                  SERIAL,
@@ -1804,7 +1804,7 @@ CREATE TABLE IF NOT EXISTS l_url_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS l_work_work ( -- replicate
     id                  SERIAL,
@@ -1816,7 +1816,7 @@ CREATE TABLE IF NOT EXISTS l_work_work ( -- replicate
     link_order          INTEGER NOT NULL DEFAULT 0 CHECK (link_order >= 0),
     entity0_credit      TEXT NOT NULL,
     entity1_credit      TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label ( -- replicate (verbose)
     id                  SERIAL,
@@ -1849,14 +1849,14 @@ CREATE TABLE IF NOT EXISTS label ( -- replicate (verbose)
            end_date_day IS NULL)
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_rating_raw
 (
     label               INTEGER NOT NULL, -- PK, references label.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     rating              SMALLINT NOT NULL CHECK (rating >= 0 AND rating <= 100)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_tag_raw
 (
@@ -1864,7 +1864,7 @@ CREATE TABLE IF NOT EXISTS label_tag_raw
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_alias_type ( -- replicate
     id                  SERIAL,
@@ -1873,7 +1873,7 @@ CREATE TABLE IF NOT EXISTS label_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_alias ( -- replicate (verbose)
     id                  SERIAL,
@@ -1916,45 +1916,45 @@ CREATE TABLE IF NOT EXISTS label_alias ( -- replicate (verbose)
           primary_for_locale IS FALSE AND locale IS NULL
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_annotation ( -- replicate (verbose)
     label               INTEGER NOT NULL, -- PK, references label.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_ipi ( -- replicate (verbose)
     label               INTEGER NOT NULL, -- PK, references label.id
     ipi                 CHAR(11) NOT NULL CHECK (ipi REGEXP '^\\d{11}$'), -- PK
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_isni ( -- replicate (verbose)
     label               INTEGER NOT NULL, -- PK, references label.id
     isni                CHAR(36) NOT NULL CHECK (isni REGEXP '^\\d{15}[\\dX]$'), -- PK
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_meta ( -- replicate
     id                  INTEGER NOT NULL, -- PK, references label.id CASCADE
     rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
     rating_count        INTEGER
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references label.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_tag ( -- replicate (verbose)
     label               INTEGER NOT NULL, -- PK, references label.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS label_type ( -- replicate
     id                  SERIAL,
@@ -1963,7 +1963,7 @@ CREATE TABLE IF NOT EXISTS label_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS language ( -- replicate
     id                  SERIAL,
@@ -1973,7 +1973,7 @@ CREATE TABLE IF NOT EXISTS language ( -- replicate
     name                VARCHAR(100) NOT NULL,
     frequency           INTEGER NOT NULL DEFAULT 0,
     iso_code_3          CHAR(3)  -- ISO 639-3
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 ALTER TABLE language
       ADD CONSTRAINT iso_code_check
@@ -2005,13 +2005,13 @@ CREATE TABLE IF NOT EXISTS link ( -- replicate
            end_date_day IS NULL)
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_attribute ( -- replicate
     link                INTEGER NOT NULL, -- PK, references link.id
     attribute_type      INTEGER NOT NULL, -- PK, references link_attribute_type.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_attribute_type ( -- replicate
     id                  SERIAL,
@@ -2022,27 +2022,27 @@ CREATE TABLE IF NOT EXISTS link_attribute_type ( -- replicate
     name                VARCHAR(255) NOT NULL,
     description         TEXT,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_creditable_attribute_type ( -- replicate
   attribute_type INT NOT NULL -- PK, references link_attribute_type.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_attribute_credit ( -- replicate
   link INT NOT NULL, -- PK, references link.id
   attribute_type INT NOT NULL, -- PK, references link_creditable_attribute_type.attribute_type
   credited_as TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_text_attribute_type ( -- replicate
     attribute_type      INT NOT NULL -- PK, references link_attribute_type.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_attribute_text_value ( -- replicate
     link                INT NOT NULL, -- PK, references link.id
     attribute_type      INT NOT NULL, -- PK, references link_text_attribute_type.attribute_type
     text_value          TEXT NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_type ( -- replicate
     id                  SERIAL,
@@ -2062,7 +2062,7 @@ CREATE TABLE IF NOT EXISTS link_type ( -- replicate
     has_dates           CHAR(1) NOT NULL DEFAULT true,
     entity0_cardinality INTEGER NOT NULL DEFAULT 0,
     entity1_cardinality INTEGER NOT NULL DEFAULT 0
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS link_type_attribute_type ( -- replicate
     link_type           INTEGER NOT NULL, -- PK, references link_type.id
@@ -2070,7 +2070,7 @@ CREATE TABLE IF NOT EXISTS link_type_attribute_type ( -- replicate
     min                 SMALLINT,
     max                 SMALLINT,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection
 (
@@ -2081,7 +2081,7 @@ CREATE TABLE IF NOT EXISTS editor_collection
     public              CHAR(1) NOT NULL DEFAULT FALSE,
     description         TEXT NOT NULL,
     type                INTEGER NOT NULL -- references editor_collection_type.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_type ( -- replicate
     id                  SERIAL,
@@ -2091,67 +2091,67 @@ CREATE TABLE IF NOT EXISTS editor_collection_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_area (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     area INTEGER NOT NULL -- PK, references area.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_artist (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     artist INTEGER NOT NULL -- PK, references artist.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_event (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     event INTEGER NOT NULL -- PK, references event.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_instrument (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     instrument INTEGER NOT NULL -- PK, references instrument.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_label (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     label INTEGER NOT NULL -- PK, references label.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_place (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     place INTEGER NOT NULL -- PK, references place.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_recording (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     recording INTEGER NOT NULL -- PK, references recording.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_release (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     `release` INTEGER NOT NULL -- PK, references release.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_release_group (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     release_group INTEGER NOT NULL -- PK, references release_group.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_series (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     series INTEGER NOT NULL -- PK, references series.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_work (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     work INTEGER NOT NULL -- PK, references work.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_collection_deleted_entity (
     collection INTEGER NOT NULL, -- PK, references editor_collection.id
     gid CHAR(36) NOT NULL -- PK, references deleted_entity.gid
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_oauth_token
 (
@@ -2164,7 +2164,7 @@ CREATE TABLE IF NOT EXISTS editor_oauth_token
     expire_time         TIMESTAMP NOT NULL,
     scope               INTEGER NOT NULL DEFAULT 0,
     granted             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_watch_preferences
 (
@@ -2172,25 +2172,25 @@ CREATE TABLE IF NOT EXISTS editor_watch_preferences
     notify_via_email CHAR(1) NOT NULL DEFAULT TRUE,
     notification_timeframe TIME NOT NULL DEFAULT '00:00:00',
     last_checked TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_watch_artist
 (
     artist INTEGER NOT NULL, -- PK, references artist.id CASCADE
     editor INTEGER NOT NULL  -- PK, references editor.id CASCADE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_watch_release_group_type
 (
     editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
     release_group_type INTEGER NOT NULL -- PK, references release_group_primary_type.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS editor_watch_release_status
 (
     editor INTEGER NOT NULL, -- PK, references editor.id CASCADE
     release_status INTEGER NOT NULL -- PK, references release_status.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS medium ( -- replicate (verbose)
     id                  SERIAL,
@@ -2201,7 +2201,7 @@ CREATE TABLE IF NOT EXISTS medium ( -- replicate (verbose)
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     track_count         INTEGER NOT NULL DEFAULT 0
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS medium_cdtoc ( -- replicate (verbose)
     id                  SERIAL,
@@ -2209,7 +2209,7 @@ CREATE TABLE IF NOT EXISTS medium_cdtoc ( -- replicate (verbose)
     cdtoc               INTEGER NOT NULL, -- references cdtoc.id
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS medium_format ( -- replicate
     id                  SERIAL,
@@ -2220,12 +2220,12 @@ CREATE TABLE IF NOT EXISTS medium_format ( -- replicate
     has_discids         CHAR(1) NOT NULL DEFAULT FALSE,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS orderable_link_type ( -- replicate
     link_type           INTEGER NOT NULL, -- PK, references link_type.id
     direction           SMALLINT NOT NULL DEFAULT 1 CHECK (direction = 1 OR direction = 2)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -2259,7 +2259,7 @@ CREATE TABLE IF NOT EXISTS place ( -- replicate (verbose)
            end_date_day IS NULL)
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place_alias ( -- replicate (verbose)
     id                  SERIAL,
@@ -2302,7 +2302,7 @@ CREATE TABLE IF NOT EXISTS place_alias ( -- replicate (verbose)
           primary_for_locale IS FALSE AND locale IS NULL
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place_alias_type ( -- replicate
     id                  SERIAL,
@@ -2311,25 +2311,25 @@ CREATE TABLE IF NOT EXISTS place_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place_annotation ( -- replicate (verbose)
     place               INTEGER NOT NULL, -- PK, references place.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references place.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place_tag ( -- replicate (verbose)
     place               INTEGER NOT NULL, -- PK, references place.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place_tag_raw
 (
@@ -2337,7 +2337,7 @@ CREATE TABLE IF NOT EXISTS place_tag_raw
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS place_type ( -- replicate
     id                  SERIAL, -- PK
@@ -2346,14 +2346,14 @@ CREATE TABLE IF NOT EXISTS place_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS replication_control ( -- replicate
     id                              SERIAL,
     current_schema_sequence         INTEGER NOT NULL,
     current_replication_sequence    INTEGER,
     last_replication_date           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording ( -- replicate (verbose)
     id                  SERIAL,
@@ -2365,7 +2365,7 @@ CREATE TABLE IF NOT EXISTS recording ( -- replicate (verbose)
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     video               CHAR(1) NOT NULL DEFAULT FALSE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_alias_type ( -- replicate
     id                  SERIAL, -- PK,
@@ -2374,7 +2374,7 @@ CREATE TABLE IF NOT EXISTS recording_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_alias ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -2409,14 +2409,14 @@ CREATE TABLE IF NOT EXISTS recording_alias ( -- replicate (verbose)
     ),
     CONSTRAINT primary_check
     CHECK ((locale IS NULL AND primary_for_locale IS FALSE) OR (locale IS NOT NULL))
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_rating_raw
 (
     recording           INTEGER NOT NULL, -- PK, references recording.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     rating              SMALLINT NOT NULL CHECK (rating >= 0 AND rating <= 100)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_tag_raw
 (
@@ -2424,31 +2424,31 @@ CREATE TABLE IF NOT EXISTS recording_tag_raw
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_annotation ( -- replicate (verbose)
     recording           INTEGER NOT NULL, -- PK, references recording.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_meta ( -- replicate
     id                  INTEGER NOT NULL, -- PK, references recording.id CASCADE
     rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
     rating_count        INTEGER
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references recording.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS recording_tag ( -- replicate (verbose)
     recording           INTEGER NOT NULL, -- PK, references recording.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS `release` ( -- replicate (verbose)
     id                  SERIAL,
@@ -2465,7 +2465,7 @@ CREATE TABLE IF NOT EXISTS `release` ( -- replicate (verbose)
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     quality             SMALLINT NOT NULL DEFAULT -1,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_alias_type ( -- replicate
     id                  SERIAL, -- PK,
@@ -2474,7 +2474,7 @@ CREATE TABLE IF NOT EXISTS release_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_alias ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -2509,7 +2509,7 @@ CREATE TABLE IF NOT EXISTS release_alias ( -- replicate (verbose)
     ),
     CONSTRAINT primary_check
     CHECK ((locale IS NULL AND primary_for_locale IS FALSE) OR (locale IS NOT NULL))
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_country ( -- replicate (verbose)
   `release` INTEGER NOT NULL,  -- PK, references release.id
@@ -2517,14 +2517,14 @@ CREATE TABLE IF NOT EXISTS release_country ( -- replicate (verbose)
   date_year SMALLINT,
   date_month SMALLINT,
   date_day SMALLINT
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_unknown_country ( -- replicate (verbose)
   `release` INTEGER NOT NULL,  -- PK, references release.id
   date_year SMALLINT,
   date_month SMALLINT,
   date_day SMALLINT
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_raw ( -- replicate
     id                  SERIAL, -- PK
@@ -2537,7 +2537,7 @@ CREATE TABLE IF NOT EXISTS release_raw ( -- replicate
     source              INTEGER DEFAULT 0,
     barcode             VARCHAR(255),
     comment             VARCHAR(255) NOT NULL DEFAULT ''
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_tag_raw
 (
@@ -2545,18 +2545,18 @@ CREATE TABLE IF NOT EXISTS release_tag_raw
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_annotation ( -- replicate (verbose)
     `release`             INTEGER NOT NULL, -- PK, references release.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references release.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_meta ( -- replicate (verbose)
     id                  INTEGER NOT NULL, -- PK, references release.id CASCADE
@@ -2565,14 +2565,14 @@ CREATE TABLE IF NOT EXISTS release_meta ( -- replicate (verbose)
     amazon_asin         VARCHAR(10),
     amazon_store        VARCHAR(20),
     cover_art_presence  ENUM('absent', 'present', 'darkened') NOT NULL DEFAULT 'absent'
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_coverart
 (
     id                  INTEGER NOT NULL, -- PK, references release.id CASCADE
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     cover_art_url       VARCHAR(255)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_label ( -- replicate (verbose)
     id                  SERIAL,
@@ -2580,7 +2580,7 @@ CREATE TABLE IF NOT EXISTS release_label ( -- replicate (verbose)
     label               INTEGER, -- references label.id
     catalog_number      VARCHAR(255),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_packaging ( -- replicate
     id                  SERIAL,
@@ -2589,7 +2589,7 @@ CREATE TABLE IF NOT EXISTS release_packaging ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_status ( -- replicate
     id                  SERIAL,
@@ -2598,14 +2598,14 @@ CREATE TABLE IF NOT EXISTS release_status ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_tag ( -- replicate (verbose)
     `release`             INTEGER NOT NULL, -- PK, references release.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group ( -- replicate (verbose)
     id                  SERIAL,
@@ -2616,7 +2616,7 @@ CREATE TABLE IF NOT EXISTS release_group ( -- replicate (verbose)
     comment             VARCHAR(255) NOT NULL DEFAULT '',
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_alias_type ( -- replicate
     id                  SERIAL, -- PK,
@@ -2625,7 +2625,7 @@ CREATE TABLE IF NOT EXISTS release_group_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_alias ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -2659,14 +2659,14 @@ CREATE TABLE IF NOT EXISTS release_group_alias ( -- replicate (verbose)
         )
       ),
              CONSTRAINT primary_check
-                 CHECK ((locale IS NULL AND primary_for_locale IS FALSE) OR (locale IS NOT NULL)));
+                 CHECK ((locale IS NULL AND primary_for_locale IS FALSE) OR (locale IS NOT NULL))) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_rating_raw
 (
     release_group       INTEGER NOT NULL, -- PK, references release_group.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     rating              SMALLINT NOT NULL CHECK (rating >= 0 AND rating <= 100)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_tag_raw
 (
@@ -2674,18 +2674,18 @@ CREATE TABLE IF NOT EXISTS release_group_tag_raw
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_annotation ( -- replicate (verbose)
     release_group       INTEGER NOT NULL, -- PK, references release_group.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references release_group.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_meta ( -- replicate
     id                  INTEGER NOT NULL, -- PK, references release_group.id CASCADE
@@ -2695,14 +2695,14 @@ CREATE TABLE IF NOT EXISTS release_group_meta ( -- replicate
     first_release_date_day    SMALLINT,
     rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
     rating_count        INTEGER
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_tag ( -- replicate (verbose)
     release_group       INTEGER NOT NULL, -- PK, references release_group.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_primary_type ( -- replicate
     id                  SERIAL,
@@ -2711,7 +2711,7 @@ CREATE TABLE IF NOT EXISTS release_group_primary_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_secondary_type ( -- replicate
     id                  SERIAL NOT NULL, -- PK
@@ -2720,13 +2720,13 @@ CREATE TABLE IF NOT EXISTS release_group_secondary_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS release_group_secondary_type_join ( -- replicate (verbose)
     release_group INTEGER NOT NULL, -- PK, references release_group.id,
     secondary_type INTEGER NOT NULL, -- PK, references release_group_secondary_type.id
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS script ( -- replicate
     id                  SERIAL,
@@ -2734,7 +2734,7 @@ CREATE TABLE IF NOT EXISTS script ( -- replicate
     iso_number          CHAR(3) NOT NULL, -- ISO 15924
     name                VARCHAR(100) NOT NULL,
     frequency           INTEGER NOT NULL DEFAULT 0
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series ( -- replicate (verbose)
     id                  SERIAL,
@@ -2746,7 +2746,7 @@ CREATE TABLE IF NOT EXISTS series ( -- replicate (verbose)
     ordering_type       INTEGER NOT NULL, -- references series_ordering_type.id
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_type ( -- replicate (verbose)
     id                  SERIAL,
@@ -2756,7 +2756,7 @@ CREATE TABLE IF NOT EXISTS series_type ( -- replicate (verbose)
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_ordering_type ( -- replicate (verbose)
     id                  SERIAL,
@@ -2765,13 +2765,13 @@ CREATE TABLE IF NOT EXISTS series_ordering_type ( -- replicate (verbose)
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references series.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_alias_type ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -2780,7 +2780,7 @@ CREATE TABLE IF NOT EXISTS series_alias_type ( -- replicate (verbose)
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_alias ( -- replicate (verbose)
     id                  SERIAL, -- PK
@@ -2823,32 +2823,32 @@ CREATE TABLE IF NOT EXISTS series_alias ( -- replicate (verbose)
           primary_for_locale IS FALSE AND locale IS NULL
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_annotation ( -- replicate (verbose)
     series              INTEGER NOT NULL, -- PK, references series.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_tag ( -- replicate (verbose)
     series              INTEGER NOT NULL, -- PK, references series.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS series_tag_raw (
     series              INTEGER NOT NULL, -- PK, references series.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS tag ( -- replicate (verbose)
     id                  SERIAL,
     name                VARCHAR(255) NOT NULL,
     ref_count           INTEGER NOT NULL DEFAULT 0
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS tag_relation
 (
@@ -2857,7 +2857,7 @@ CREATE TABLE IF NOT EXISTS tag_relation
     weight              INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CHECK (tag1 < tag2)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS track ( -- replicate (verbose)
     id                  SERIAL,
@@ -2872,13 +2872,13 @@ CREATE TABLE IF NOT EXISTS track ( -- replicate (verbose)
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_data_track       CHAR(1) NOT NULL DEFAULT FALSE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS track_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references track.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS track_raw ( -- replicate
     id                  SERIAL, -- PK
@@ -2886,12 +2886,12 @@ CREATE TABLE IF NOT EXISTS track_raw ( -- replicate
     title               VARCHAR(255) NOT NULL,
     artist              VARCHAR(255),   -- For VA albums, otherwise empty
     sequence            INTEGER NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 -- CREATE TABLE IF NOT EXISTS medium_index ( -- replicate
 --     medium              INTEGER, -- PK, references medium.id CASCADE
 --     toc                 CUBE
--- );
+-- ) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS url ( -- replicate
     id                  SERIAL,
@@ -2899,13 +2899,13 @@ CREATE TABLE IF NOT EXISTS url ( -- replicate
     url                 TEXT NOT NULL,
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS url_gid_redirect ( -- replicate
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references url.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS vote
 (
@@ -2915,7 +2915,7 @@ CREATE TABLE IF NOT EXISTS vote
     vote                SMALLINT NOT NULL,
     vote_time            TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     superseded          CHAR(1) NOT NULL DEFAULT FALSE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work ( -- replicate (verbose)
     id                  SERIAL,
@@ -2926,14 +2926,14 @@ CREATE TABLE IF NOT EXISTS work ( -- replicate (verbose)
     edits_pending       INTEGER NOT NULL DEFAULT 0 CHECK (edits_pending >= 0),
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     language            INTEGER  -- references language.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_rating_raw
 (
     work                INTEGER NOT NULL, -- PK, references work.id
     editor              INTEGER NOT NULL, -- PK, references editor.id
     rating              SMALLINT NOT NULL CHECK (rating >= 0 AND rating <= 100)
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_tag_raw
 (
@@ -2941,7 +2941,7 @@ CREATE TABLE IF NOT EXISTS work_tag_raw
     editor              INTEGER NOT NULL, -- PK, references editor.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     is_upvote           CHAR(1) NOT NULL DEFAULT TRUE
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_alias_type ( -- replicate
     id                  SERIAL,
@@ -2950,7 +2950,7 @@ CREATE TABLE IF NOT EXISTS work_alias_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_alias ( -- replicate (verbose)
     id                  SERIAL,
@@ -2993,31 +2993,31 @@ CREATE TABLE IF NOT EXISTS work_alias ( -- replicate (verbose)
           primary_for_locale IS FALSE AND locale IS NULL
         )
       )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_annotation ( -- replicate (verbose)
     work                INTEGER NOT NULL, -- PK, references work.id
     annotation          INTEGER NOT NULL -- PK, references annotation.id
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_gid_redirect ( -- replicate (verbose)
     gid                 CHAR(36) NOT NULL, -- PK
     new_id              INTEGER NOT NULL, -- references work.id
     created             TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_meta ( -- replicate
     id                  INTEGER NOT NULL, -- PK, references work.id CASCADE
     rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
     rating_count        INTEGER
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_tag ( -- replicate (verbose)
     work                INTEGER NOT NULL, -- PK, references work.id
     tag                 INTEGER NOT NULL, -- PK, references tag.id
     count               INTEGER NOT NULL,
     last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_type ( -- replicate
     id                  SERIAL,
@@ -3026,7 +3026,7 @@ CREATE TABLE IF NOT EXISTS work_type ( -- replicate
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_attribute_type ( -- replicate (verbose)
     id                  SERIAL,  -- PK
@@ -3037,7 +3037,7 @@ CREATE TABLE IF NOT EXISTS work_attribute_type ( -- replicate (verbose)
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_attribute_type_allowed_value ( -- replicate (verbose)
     id                  SERIAL,  -- PK
@@ -3047,7 +3047,7 @@ CREATE TABLE IF NOT EXISTS work_attribute_type_allowed_value ( -- replicate (ver
     child_order         INTEGER NOT NULL DEFAULT 0,
     description         TEXT,
     gid                 CHAR(36) NOT NULL
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 CREATE TABLE IF NOT EXISTS work_attribute ( -- replicate (verbose)
     id                                  SERIAL,  -- PK
@@ -3060,7 +3060,7 @@ CREATE TABLE IF NOT EXISTS work_attribute ( -- replicate (verbose)
         OR
         (work_attribute_type_allowed_value IS NOT NULL AND work_attribute_text IS NULL)
     )
-);
+) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 COMMIT;
 
