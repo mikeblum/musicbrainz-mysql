@@ -52,6 +52,8 @@ Use your favorite `diff` tool  - I'm partial to [meld]() to see the transition f
 
 3\. `release` is a reserved word in MySQL
 
+The full list can be found here: [MySQL 5.7 Reserved Words](https://dev.mysql.com/doc/refman/5.7/en/keywords.html) 
+
 These columns are escaped with a back-tick (`) like this:
 
 ```diff
@@ -100,7 +102,6 @@ CREATE TABLE release_meta ( -- replicate (verbose)
 +    cover_art_presence  cover_art_presence NOT NULL DEFAULT 'absent'
 );
 ```
-
 
  
 ## Next Steps
