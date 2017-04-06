@@ -1,3 +1,4 @@
 # MusicBrainz MySQL
 
-![MacDown logo](http://macdown.uranusjr.com/static/images/logo-160.png)
+![MusicBrainz](https://raw.githubusercontent.com/mikeblum/musicbrainz-mysql/master/images/MusicBrainz_Logo.png)
+![MusicBrainz](https://raw.githubusercontent.com/mikeblum/musicbrainz-mysql/master/images/MusicBrainz_Logo.png)
