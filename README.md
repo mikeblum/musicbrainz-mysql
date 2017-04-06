@@ -34,46 +34,51 @@ Use your favorite `diff` tool  - I'm partial to [meld]() to see the transition f
 
 1\. Comments in MySQL need a space between -- and it's text:
 
-```SQL
-CREATE TABLE area_alias ( -- replicate (verbose)
-    id                  SERIAL, --PK
-```
-
-becomes
-
-```SQL
-CREATE TABLE IF NOT EXISTS area_alias ( -- replicate (verbose)
-    id                  SERIAL, -- PK
+```diff
+- CREATE TABLE area_alias ( -- replicate (verbose)
+-    id                  SERIAL, --PK
++ CREATE TABLE IF NOT EXISTS area_alias ( -- replicate (verbose)
++    id                  SERIAL, -- PK
 ```
 
 2\. UUIDs aren't supported in MySQL
 
-```SQL
-CREATE TABLE area_gid_redirect ( -- replicate (verbose)
-    gid                 UUID NOT NULL, -- PK
-```
-
-becomes
-
-```SQL
-CREATE TABLE IF NOT EXISTS area_gid_redirect ( -- replicate (verbose)
-    gid                 CHAR(36) NOT NULL, -- PK
+```diff
+- CREATE TABLE area_gid_redirect ( -- replicate (verbose)
+-    gid                 UUID NOT NULL, -- PK
++ CREATE TABLE IF NOT EXISTS area_gid_redirect ( -- replicate (verbose)
++    gid                 CHAR(36) NOT NULL, -- PK
 ```
 
 3\. `release` is a reserved word in MySQL
 
 These columns are escaped with a back-tick (`) like this:
 
-4\. Timestamps in MySQL are different
+```diff
+CREATE TABLE cdtoc_raw ( -- replicate
+    id                  SERIAL, -- PK
+-     release             INTEGER NOT NULL, -- references release_raw.id
+    discid              CHAR(28) NOT NULL,
+    track_count          INTEGER NOT NULL,
+    leadout_offset       INTEGER NOT NULL,
+    track_offset         INTEGER[] NOT NULL
+);
 
-```SQL
-last_updated        TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+CREATE TABLE IF NOT EXISTS cdtoc_raw ( -- replicate
+    id                      SERIAL, -- PK
++    `release`               INTEGER NOT NULL, -- references release_raw.id
+    discid                  CHAR(28) NOT NULL,
+    track_count             INTEGER NOT NULL,
+    leadout_offset          INTEGER NOT NULL,
+    track_offset            JSON NOT NULL
+);
 ```
 
-becomes
+4\. Timestamps in MySQL are different
 
-```SQL
-last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+```diff
+- last_updated        TIMESTAMP WITH TIME ZONE DEFAULT NOW()
++ last_updated        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ```
 
 5\. Geo points and `cube` are difficult in MySQL
@@ -84,22 +89,19 @@ Copped out and put these troublesome columns into `VARCHAR`
 
 Most of these are `enums` so we can do something like this:
 
-```SQL
-CREATE TYPE cover_art_presence AS ENUM ('absent', 'present', 'darkened');
-```
-
-becomes
-
-```SQL
+```diff
+- CREATE TYPE cover_art_presence AS ENUM ('absent', 'present', 'darkened');
 CREATE TABLE release_meta ( -- replicate (verbose)
     id                  INTEGER NOT NULL, -- PK, references release.id CASCADE
     date_added          TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     info_url            VARCHAR(255),
     amazon_asin         VARCHAR(10),
     amazon_store        VARCHAR(20),
-    cover_art_presence  cover_art_presence NOT NULL DEFAULT 'absent'
++    cover_art_presence  cover_art_presence NOT NULL DEFAULT 'absent'
 );
 ```
+
+
  
 ## Next Steps
 
