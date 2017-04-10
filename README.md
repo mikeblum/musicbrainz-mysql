@@ -103,7 +103,25 @@ CREATE TABLE release_meta ( -- replicate (verbose)
 );
 ```
 
- 
+7\. CJK support
+
+Unfortunantly the default table encoding is `latin1` and the collation is set to `latin1_swedish_ci` which makes a hash of Chinese, Japanese, and Korean (CJK). Setting each table to support UTF-8 is as easy as adding:
+
+```diff
+CREATE TABLE IF NOT EXISTS artist_meta ( -- replicate
+    id                  INTEGER NOT NULL, -- PK, references artist.id CASCADE
+    rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
+    rating_count        INTEGER
+-);
+CREATE TABLE IF NOT EXISTS artist_meta ( -- replicate
+    id                  INTEGER NOT NULL, -- PK, references artist.id CASCADE
+    rating              SMALLINT CHECK (rating >= 0 AND rating <= 100),
+    rating_count        INTEGER
++ ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+```
+
+to each table.
+
 ## Next Steps
 
 * Replication - the default build of MusicBrainz offers seamless replication to PostgresQL
